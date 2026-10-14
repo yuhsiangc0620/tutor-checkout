@@ -4,7 +4,7 @@
 
 ## 交接前，原作者要交給接手者
 
-1. 本專案的公開 GitHub 倉庫網址。倉庫根目錄是網頁專案，`firmware/CheckoutDevice/` 是獨立的 Arduino 草圖資料夾。
+1. 本專案的公開 GitHub 倉庫網址：[yuhsiangc0620/tutor-checkout](https://github.com/yuhsiangc0620/tutor-checkout)。倉庫根目錄是網頁專案，`firmware/CheckoutDevice/` 是獨立的 Arduino 草圖資料夾。
 2. ESP32、已接妥的 PIR 與 RC522、USB 供電線，以及至少兩張可區分的 RFID 卡。告知接線表在 [README.md](README.md) 的「接線與 Arduino」。
 3. 告知接手者哪些商品要綁定哪張卡、哪張卡用作付款。若她建立自己的 Upstash 資料庫，需要**重新登記**這些卡；GitHub 不會帶走現有資料庫內容。
 
