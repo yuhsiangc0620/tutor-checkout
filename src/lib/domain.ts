@@ -40,7 +40,7 @@ export function reduceCheckout(state: Checkout, action: Action): Checkout {
     case 'EVENT': {
       if (action.event.cursor <= state.cursor) return state;
       const next = { ...state, cursor: action.event.cursor };
-      if (action.event.type === 'person_detected') return state.stage === 'idle' ? { ...next, stage: 'welcome' } : next;
+      if (action.event.type === 'person_detected') return state.stage === 'idle' ? reduceCheckout(next, { type: 'START' }) : next;
       if (!['scan', 'review', 'pay'].includes(state.stage)) return next;
       const binding = action.catalog.bindings.find(b => b.uid === normalizeUid(action.event.uid ?? ''));
       if (!binding) return { ...next, notice: '這張卡還沒有設定，請換一張商品卡或請工作人員協助。' };

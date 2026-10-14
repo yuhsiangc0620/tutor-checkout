@@ -66,3 +66,7 @@
 ## 2026-10-14 待機感測模式提示
 
 待機畫面新增實體／模擬模式與裝置連線狀態，展示選項可在待機時切換模式。唯讀查核 Redis 顯示 ESP32 持續回報心跳與 PIR 事件；本機 Chrome 連接同一 Redis，實際新 PIR 事件成功使待機頁切換歡迎畫面。Chrome 模擬交易、真實 Redis 訪客連線、7 項單元測試及 TypeScript 通過。Vercel 預覽建置 READY：`https://tutor-checkout-dxdsokz8c-hsiang11.vercel.app`。仍待使用者在此新網址重測現場頁面。
+
+## 2026-10-14 PIR 直接進入商品頁
+
+依現場回饋，新的 PIR 事件在待機階段直接開始交易並顯示「您的商品」頁；進行中再收到 PIR 不會重設清單。模擬 PIR 的 Chrome 完整交易、7 項單元測試、TypeScript 與 Vercel 預覽建置通過。最新預覽：`https://tutor-checkout-367e3l3mt-hsiang11.vercel.app`。實體 ESP32 搭配此預覽網址仍需現場確認。

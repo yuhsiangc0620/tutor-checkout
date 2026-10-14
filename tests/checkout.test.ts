@@ -7,9 +7,8 @@ const event=(cursor:number,uid?:string)=>({cursor,type:uid?'rfid_scanned' as con
 test('complete transaction requires start, products, review, then the payment card',()=>{
   let state=freshCheckout();
   const apply=(cursor:number,uid?:string)=>state=reduceCheckout(state,{type:'EVENT',event:event(cursor,uid),catalog:simulationCatalog});
-  apply(1);assert.equal(state.stage,'welcome');
-  apply(2,'DE000001');assert.equal(count(state),0);
-  state=reduceCheckout(state,{type:'START'});
+  apply(1);assert.equal(state.stage,'scan');assert.ok(state.transactionId);
+  apply(2,'DEFFFFFF');assert.equal(state.stage,'scan');
   apply(3,'DEFFFFFF');assert.equal(state.stage,'scan');
   apply(4,'DE000001');apply(5,'DE000002');apply(6,'DE000001');
   assert.equal(count(state),3);assert.equal(total(state,simulationCatalog),223);

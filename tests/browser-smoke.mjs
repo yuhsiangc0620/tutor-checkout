@@ -18,8 +18,6 @@ try {
  await page.getByRole('heading',{name:'準備好開始結帳',exact:true}).waitFor();
  assert.equal(await page.getByText('模擬展示模式 · 不接收 ESP32 訊號').isVisible(),true);
  await panel();await page.getByRole('button',{name:'有人靠近',exact:true}).click();await page.getByRole('button',{name:'關閉測試面板'}).click();
- await page.getByRole('heading',{name:'歡迎，開始結帳',exact:true}).waitFor();
- await page.getByRole('button',{name:'開始結帳',exact:true}).click();
  await page.getByRole('heading',{name:'您的商品',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'確認並付款',exact:true}).isEnabled(),false);
  await page.screenshot({path:'test-results/empty.png'});
