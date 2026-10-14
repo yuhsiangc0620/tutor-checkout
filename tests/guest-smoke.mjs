@@ -30,6 +30,7 @@ try {
   await page.getByRole('checkbox').uncheck();
   await page.getByRole('button',{name:'連接感應裝置',exact:true}).click();
   await page.getByRole('heading',{name:'等待顧客靠近'}).waitFor();
+  await page.getByText('實體感測模式 · 裝置已連線').waitFor();
   await page.getByRole('button',{name:'手動開始結帳'}).click();
   await page.getByRole('heading',{name:'您的商品'}).waitFor();
   const kioskCatalog=await page.evaluate(async()=>await (await fetch('/api/catalog?view=checkout')).json());

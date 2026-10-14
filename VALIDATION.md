@@ -62,3 +62,7 @@
 ## 2026-10-14 PIR 歡迎流程修正
 
 連接感應裝置後先停留在「等待顧客靠近」，PIR 事件切換為歡迎畫面；按「開始結帳」後才進入掃商品頁。仍可手動開始。7 項單元測試、Chrome 模擬 PIR 與完整交易、真實 Redis 訪客連線檢查及 Vercel 預覽建置通過。預覽網址：`https://tutor-checkout-83da6lv3a-hsiang11.vercel.app`。尚未在實體 ESP32 與新預覽頁面之間現場重測。
+
+## 2026-10-14 待機感測模式提示
+
+待機畫面新增實體／模擬模式與裝置連線狀態，展示選項可在待機時切換模式。唯讀查核 Redis 顯示 ESP32 持續回報心跳與 PIR 事件；本機 Chrome 連接同一 Redis，實際新 PIR 事件成功使待機頁切換歡迎畫面。Chrome 模擬交易、真實 Redis 訪客連線、7 項單元測試及 TypeScript 通過。Vercel 預覽建置 READY：`https://tutor-checkout-dxdsokz8c-hsiang11.vercel.app`。仍待使用者在此新網址重測現場頁面。

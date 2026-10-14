@@ -16,6 +16,7 @@ try {
  await fits('welcome');await page.screenshot({path:'test-results/welcome.png'});
  await page.getByRole('button',{name:'開始結帳',exact:true}).click();assert.equal(await page.locator('.setup-modal input[type=password]').count(),0);await page.getByRole('checkbox').uncheck();await page.getByRole('button',{name:'先使用模擬展示'}).click();
  await page.getByRole('heading',{name:'準備好開始結帳',exact:true}).waitFor();
+ assert.equal(await page.getByText('模擬展示模式 · 不接收 ESP32 訊號').isVisible(),true);
  await panel();await page.getByRole('button',{name:'有人靠近',exact:true}).click();await page.getByRole('button',{name:'關閉測試面板'}).click();
  await page.getByRole('heading',{name:'歡迎，開始結帳',exact:true}).waitFor();
  await page.getByRole('button',{name:'開始結帳',exact:true}).click();
