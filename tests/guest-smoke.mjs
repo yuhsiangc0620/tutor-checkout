@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test';
 import nextEnv from '@next/env';
 nextEnv.loadEnvConfig(process.cwd());
 
-const base='http://127.0.0.1:3000';
+const base='http://localhost:3000';
 assert.ok(process.env.SESSION_SECRET && (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL));
 assert.equal((await fetch(base+'/api/catalog')).status,401);
 assert.equal((await fetch(base+'/api/events')).status,401);
@@ -29,6 +29,8 @@ try {
   assert.equal(await page.locator('.setup-modal input[type=password]').count(),0);
   await page.getByRole('checkbox').uncheck();
   await page.getByRole('button',{name:'連接感應裝置',exact:true}).click();
+  await page.getByRole('heading',{name:'等待顧客靠近'}).waitFor();
+  await page.getByRole('button',{name:'手動開始結帳'}).click();
   await page.getByRole('heading',{name:'您的商品'}).waitFor();
   const kioskCatalog=await page.evaluate(async()=>await (await fetch('/api/catalog?view=checkout')).json());
   assert.deepEqual(kioskCatalog.bindings,guestCatalog.bindings);

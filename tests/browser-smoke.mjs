@@ -12,9 +12,13 @@ async function fits(label){
  const dock=await page.locator('.assistant-dock').boundingBox();assert.ok(dock.y+dock.height<=size.h+1,`${label}: help stays visible`);
 }
 try {
- await page.goto('http://127.0.0.1:3000',{waitUntil:'networkidle'});
+ await page.goto('http://localhost:3000',{waitUntil:'networkidle'});
  await fits('welcome');await page.screenshot({path:'test-results/welcome.png'});
  await page.getByRole('button',{name:'開始結帳',exact:true}).click();assert.equal(await page.locator('.setup-modal input[type=password]').count(),0);await page.getByRole('checkbox').uncheck();await page.getByRole('button',{name:'先使用模擬展示'}).click();
+ await page.getByRole('heading',{name:'準備好開始結帳',exact:true}).waitFor();
+ await panel();await page.getByRole('button',{name:'有人靠近',exact:true}).click();await page.getByRole('button',{name:'關閉測試面板'}).click();
+ await page.getByRole('heading',{name:'歡迎，開始結帳',exact:true}).waitFor();
+ await page.getByRole('button',{name:'開始結帳',exact:true}).click();
  await page.getByRole('heading',{name:'您的商品',exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'確認並付款',exact:true}).isEnabled(),false);
  await page.screenshot({path:'test-results/empty.png'});

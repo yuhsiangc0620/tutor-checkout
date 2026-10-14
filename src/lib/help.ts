@@ -23,7 +23,7 @@ export function findIntent(text: string): Intent {
   return phraseRules.find(rule=>normalized.includes(rule.phrase))?.intent ?? 'unknown';
 }
 export function stepMessage(state: Checkout): string {
-  return ({ idle:'感應商品，確認後付款。', welcome:'歡迎光臨，請點「開始結帳」。', scan:'商品卡靠近感應區，感應後移開。', review:'確認商品後，點「確認並付款」。', pay:'使用專用付款卡，感應後就完成了。', complete:'付款完成，記得帶好商品。' })[state.stage];
+  return ({ idle:'感應到有人靠近後，即可開始結帳。', welcome:'歡迎光臨，請點「開始結帳」。', scan:'商品卡靠近感應區，感應後移開。', review:'確認商品後，點「確認並付款」。', pay:'使用專用付款卡，感應後就完成了。', complete:'付款完成，記得帶好商品。' })[state.stage];
 }
 export function answerHelp(intent: Intent, state: Checkout, catalog: Catalog, previous: string): Help {
   if (intent === 'repeat' || intent === 'slow') return { intent, text: previous || stepMessage(state) };
