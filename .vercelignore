@@ -1,0 +1,10 @@
+.env*
+firmware/
+tests/
+test-results/
+playwright-report/
+README.md
+VALIDATION.md
+HANDOFF.md
+RECIPIENT_PROMPT.md
+*.tsbuildinfo

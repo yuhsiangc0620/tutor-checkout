@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env*
+!.env.example
+.vercel/
+test-results/
+playwright-report/
+public/voice/
+public/whisper/
+*.tsbuildinfo
+firmware/CheckoutDevice/secrets.h
+.DS_Store
+.vercel

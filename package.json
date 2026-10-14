@@ -1,0 +1,6 @@
+{
+  "name": "tutor-checkout", "version": "1.0.0", "private": true,
+  "scripts": {"dev":"next dev --webpack --hostname 0.0.0.0", "build":"node scripts/copy-voice-assets.mjs && next build --webpack", "start":"next start --hostname 0.0.0.0", "postinstall":"node scripts/copy-voice-assets.mjs", "test":"node --import tsx --test tests/*.test.ts", "typecheck":"tsc --noEmit"},
+  "dependencies": {"next":"^16.0.0", "react":"^19.0.0", "react-dom":"^19.0.0", "@upstash/redis":"^1.35.0", "@huggingface/transformers":"3.8.1", "@ricky0123/vad-web":"0.0.30", "opencc-js":"^1.0.5", "lucide-react":"^0.468.0"},
+  "devDependencies": {"typescript":"^5.8.0", "@types/node":"^22.0.0", "@types/react":"^19.0.0", "@types/react-dom":"^19.0.0", "tsx":"^4.20.0", "@playwright/test":"^1.55.0"}
+}
