@@ -47,7 +47,20 @@ export default function Kiosk(){
       try{const response=await fetch(`/api/events?view=checkout&after=${stateRef.current.cursor}`,{cache:'no-store'});if(response.status===401){await connectGuest();return;}const data=await response.json();if(!response.ok)throw new Error(data.error??'連線中斷');if(stopped||epoch!==eventEpoch.current||frozen.current)return;
         setNetworkError('');setLastSeen(data.lastSeen);
         if(data.gap){commit({...stateRef.current,cursor:data.cursor,notice:'連線中斷較久，請核對清單後重新感應未加入的商品。'});return;}
-        for(const event of data.events as DeviceEvent[]){if(Date.now()-event.receivedAt>10000){commit({...stateRef.current,cursor:event.cursor});continue;}applyEvent(event);}
+        for(const event of data.events as DeviceEvent[]){
+          if(Date.now()-event.receivedAt>10000){commit({...stateRef.current,cursor:event.cursor});continue;}
+          const current=stateRef.current;
+          const enteringFromPir=event.type==='person_detected'&&current.stage==='idle';
+          const unknownFirstCard=event.type==='rfid_scanned'&&current.stage==='scan'&&!current.cart.length&&!catalogRef.current.bindings.some(binding=>binding.uid===event.uid);
+          if(enteringFromPir||unknownFirstCard){
+            const catalogResponse=await fetch('/api/catalog?view=checkout',{cache:'no-store'});
+            const latestCatalog=await catalogResponse.json();
+            if(!catalogResponse.ok)throw new Error(latestCatalog.error??'無法更新商品設定');
+            if(stopped||epoch!==eventEpoch.current||frozen.current)return;
+            catalogRef.current=latestCatalog;setCatalog(latestCatalog);
+          }
+          applyEvent(event);
+        }
       }catch(e){if(!stopped)setNetworkError(e instanceof Error?e.message:'連線中斷');}finally{polling.current=false;}
     };void poll();const timer=setInterval(poll,1000);return()=>{stopped=true;clearInterval(timer);};
   },[mode,restored,commit,applyEvent]);
