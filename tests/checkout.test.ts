@@ -4,19 +4,22 @@ import {freshCheckout,reduceCheckout,simulationCatalog,total,count,validateCatal
 import {answerHelp,findIntent} from '../src/lib/help';
 import {parseIncoming} from '../src/lib/server/input';
 const event=(cursor:number,uid?:string)=>({cursor,type:uid?'rfid_scanned' as const:'person_detected' as const,uid,receivedAt:Date.now()});
-test('complete transaction requires start, products, review, then the payment card',()=>{
+test('scripted checkout requires welcome, tutorial choice, amount confirmation, method, and payment card',()=>{
   let state=freshCheckout();
   const apply=(cursor:number,uid?:string)=>state=reduceCheckout(state,{type:'EVENT',event:event(cursor,uid),catalog:simulationCatalog});
-  apply(1);assert.equal(state.stage,'scan');assert.ok(state.transactionId);
-  apply(2,'DEFFFFFF');assert.equal(state.stage,'scan');
-  apply(3,'DEFFFFFF');assert.equal(state.stage,'scan');
-  apply(4,'DE000001');apply(5,'DE000002');apply(6,'DE000001');
+  apply(1);assert.equal(state.stage,'welcome');assert.equal(state.transactionId,'');
+  state=reduceCheckout(state,{type:'START'});assert.equal(state.stage,'tutorial-choice');assert.ok(state.transactionId);
+  apply(2,'DEFFFFFF');assert.equal(state.stage,'tutorial-choice');
+  state=reduceCheckout(state,{type:'TUTORIAL_DONE'});assert.equal(state.stage,'scan');
+  apply(3,'DE000001');apply(4,'DE000002');apply(5,'DE000001');
   assert.equal(count(state),3);assert.equal(total(state,simulationCatalog),223);
-  apply(6,'DE000001');assert.equal(count(state),3);
-  apply(7);assert.equal(count(state),3);assert.equal(state.stage,'scan');
+  apply(5,'DE000001');assert.equal(count(state),3);
+  apply(6);assert.equal(count(state),3);assert.equal(state.stage,'scan');
   state=reduceCheckout(state,{type:'REVIEW'});
-  apply(8,'DE000002');assert.equal(count(state),3);
+  apply(7,'DE000002');assert.equal(count(state),3);
   state=reduceCheckout(state,{type:'PAY'});
+  apply(8,'DEFFFFFF');assert.equal(state.stage,'pay');
+  state=reduceCheckout(state,{type:'SELECT_PAYMENT',method:'credit'});
   apply(9,'DE000001');assert.equal(state.stage,'pay');
   apply(10,'12345678');assert.equal(state.stage,'pay');
   apply(11,'DEFFFFFF');assert.equal(state.stage,'complete');assert.ok(state.completedAt);
@@ -25,12 +28,13 @@ test('complete transaction requires start, products, review, then the payment ca
 });
 test('empty cart cannot advance; quantities are bounded; edits cannot mutate payment',()=>{
   let s=reduceCheckout(freshCheckout(),{type:'START'});
+  s=reduceCheckout(s,{type:'TUTORIAL_DONE'});
   s=reduceCheckout(s,{type:'REVIEW'});assert.equal(s.stage,'scan');
   s=reduceCheckout(s,{type:'PAY'});assert.equal(s.stage,'scan');
   s=reduceCheckout(s,{type:'EVENT',event:event(1,'DE000001'),catalog:simulationCatalog});
   s=reduceCheckout(s,{type:'QUANTITY',productId:'milk',delta:-1});assert.equal(count(s),1);
   s=reduceCheckout(s,{type:'QUANTITY',productId:'milk',delta:1000});assert.equal(count(s),99);
-  s=reduceCheckout(s,{type:'REVIEW'});s=reduceCheckout(s,{type:'PAY'});
+  s=reduceCheckout(s,{type:'REVIEW'});s=reduceCheckout(s,{type:'PAY'});s=reduceCheckout(s,{type:'SELECT_PAYMENT',method:'mobile'});
   s=reduceCheckout(s,{type:'REMOVE',productId:'milk'});assert.equal(count(s),99);
 });
 test('catalog rejects duplicated card roles, unknown product and invalid amounts',()=>{
@@ -53,12 +57,13 @@ test('firmware events enforce device, TTL, UID format and safe sequence',()=>{
   assert.equal(parseIncoming(valid,'checkout-01').uid,'DE000001');
   for(const change of [{ageMs:10001},{sequence:0},{bootId:'../../'},{uid:'bad'},{deviceId:'different'}])assert.throws(()=>parseIncoming({...valid,...change},'checkout-01'));
 });
-test('simplified flow confirms directly from the list and returns without losing items',()=>{
+test('declining amount confirmation returns to scan without losing items',()=>{
  let s=reduceCheckout(freshCheckout(),{type:'START'});
+ s=reduceCheckout(s,{type:'TUTORIAL_DONE'});
  s=reduceCheckout(s,{type:'EVENT',event:event(1,'DE000001'),catalog:simulationCatalog});
- s=reduceCheckout(s,{type:'PAY'});assert.equal(s.stage,'pay');assert.equal(count(s),1);
+ s=reduceCheckout(s,{type:'REVIEW'});assert.equal(s.stage,'review');
  s=reduceCheckout(s,{type:'BACK'});assert.equal(s.stage,'scan');assert.equal(count(s),1);
- assert.equal(answerHelp('pay',s,simulationCatalog,'').text.includes('確認並付款'),true);
+ assert.equal(answerHelp('pay',s,simulationCatalog,'').text.includes('去結帳'),true);
 });
 
 test('colloquial help chooses specific requests over generic help or checkout words',()=>{

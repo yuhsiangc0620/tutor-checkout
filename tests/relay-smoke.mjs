@@ -33,21 +33,27 @@ try {
  const events=await (await api('/api/events?after='+baseline.cursor)).json();assert.equal(events.events.length,2);assert.ok(Date.now()-events.lastSeen<10000);
  // Browser login, actual polling, and payment guards through the real event API.
  await page.goto(base,{waitUntil:'networkidle'});
- await page.getByRole('button',{name:'開始結帳',exact:true}).click();
+ await page.getByRole('button',{name:'點我開始結帳',exact:true}).click();
  assert.equal(await page.locator('.setup-modal input[type=password]').count(),0);
  await page.getByRole('checkbox').uncheck();await page.getByRole('button',{name:'連接感應裝置',exact:true}).click();
  await page.getByRole('dialog').waitFor({state:'hidden'});
  await packet('person_detected');
- await page.getByRole('heading',{name:'您的商品'}).waitFor();
+ await page.getByRole('heading',{name:'您好，歡迎光臨！'}).waitFor();
+ await page.getByRole('button',{name:'點我開始結帳'}).click();
+ await page.getByRole('button',{name:'不需要'}).click();
+ await page.getByRole('heading',{name:'掃描商品'}).waitFor();
  const card=await packet('rfid_scanned','CAFE0001');await packet('rfid_scanned','CAFE0001',{sequence:card.body.sequence});
  await packet('rfid_scanned','CAFE0002');await packet('rfid_scanned','CAFE0001');
  await page.locator('.item-count').filter({hasText:'3 件'}).waitFor();
  await page.reload({waitUntil:'networkidle'});await page.locator('.item-count').filter({hasText:'3 件'}).waitFor();
- await page.getByRole('button',{name:'確認並付款',exact:true}).click();
- await packet('rfid_scanned','CAFE0001');await page.getByText('這是商品卡。請使用專用付款卡感應。',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'去結帳',exact:true}).click();
+ await page.getByRole('button',{name:'是，金額正確'}).click();
+ await page.getByRole('button',{name:'信用卡'}).click();
+ await packet('rfid_scanned','CAFE0001');await page.getByText('這是商品卡。請使用專用展示付款卡感應。',{exact:true}).waitFor();
  await packet('rfid_scanned','12345678');await page.getByText('這張卡還沒有設定，請換一張商品卡或請工作人員協助。',{exact:true}).waitFor();
- await packet('rfid_scanned','CAFEFFFF');await page.getByRole('heading',{name:'結帳完成',exact:true}).waitFor();
- await page.getByRole('button',{name:'開始下一筆',exact:true}).click();await page.getByRole('button',{name:'開始結帳',exact:true}).click();
+ await packet('rfid_scanned','CAFEFFFF');await page.getByRole('heading',{name:'交易完成',exact:true}).waitFor();
+ await page.getByRole('button',{name:'結束交易',exact:true}).click();await page.getByRole('button',{name:'點我開始結帳',exact:true}).click();
+ await page.getByRole('button',{name:'不需要'}).click();
  await page.getByRole('heading',{name:'請感應第一件商品'}).waitFor();
  // Enroll a card via settings, capturing only a fresh event.
  await page.goto(base+'/settings',{waitUntil:'networkidle'});

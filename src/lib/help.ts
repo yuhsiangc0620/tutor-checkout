@@ -23,20 +23,28 @@ export function findIntent(text: string): Intent {
   return phraseRules.find(rule=>normalized.includes(rule.phrase))?.intent ?? 'unknown';
 }
 export function stepMessage(state: Checkout): string {
-  return ({ idle:'感應到有人靠近後，即可開始結帳。', welcome:'歡迎光臨，請點「開始結帳」。', scan:'商品卡靠近感應區，感應後移開。', review:'確認商品後，點「確認並付款」。', pay:'使用專用付款卡，感應後就完成了。', complete:'付款完成，記得帶好商品。' })[state.stage];
+  return ({
+    idle:'您好！我是您的結帳小幫手小智。請點螢幕中間開始結帳。',
+    welcome:'您好！我是您的結帳小幫手小智，今天讓我陪您一起結帳吧！請點一下螢幕中間開始喔！',
+    'tutorial-choice':'請問您需不需要先看一遍完整教學？點「需要」可以看示範，點「不需要」就直接開始結帳。',
+    scan:'太好了！我們直接開始結帳吧！請確認商品都有感應到喔。把商品卡靠近感應區，看到商品出現後再移開。如果有問題，可以問我。',
+    review:'請確認螢幕上的商品和總金額對不對。如果正確，請點綠色的「是」。',
+    pay:state.paymentMethod?'請把專用展示付款卡靠近感應區，稍等一下，不要太快移開。':'您今天想用什麼方式付款呢？請點選畫面上的選項。',
+    complete:'太棒了！結帳已經成功完成囉！這是模擬付款，沒有實際扣款。',
+  })[state.stage];
 }
 export function answerHelp(intent: Intent, state: Checkout, catalog: Catalog, previous: string): Help {
   if (intent === 'repeat' || intent === 'slow') return { intent, text: previous || stepMessage(state) };
   if (intent === 'total') return { intent, text:`目前共有 ${count(state)} 件商品，合計新臺幣 ${total(state,catalog)} 元。`, target:'total' };
-  if (intent === 'remove') return { intent, text:state.cart.length ? (['scan','review'].includes(state.stage) ? '請找到想移除的商品，點旁邊的垃圾桶按鈕。我已幫您標出最近加入的商品。' : '請先點「返回商品清單」，再點商品旁的垃圾桶按鈕。') : '清單裡還沒有商品。您可以先感應商品卡。', target: ['scan','review'].includes(state.stage) ? 'remove' : 'next' };
+  if (intent === 'remove') return { intent, text:state.cart.length ? (state.stage==='scan' ? '請找到想移除的商品，點旁邊的垃圾桶按鈕。我已幫您標出最近加入的商品。' : '請先回到商品清單，再點商品旁的垃圾桶按鈕。') : '清單裡還沒有商品。您可以先感應商品卡。', target: state.stage==='scan' ? 'remove' : 'next' };
   if (intent === 'scan' && state.stage === 'scan') return {intent,text:'把商品卡平放、靠近讀卡器，聽到提示後再移開。每次感應會加入一件商品。',target:'scanner',tutorial:'scan'};
   if (intent === 'pay') {
     if (!state.cart.length) return {intent,text:'請先點開始結帳並加入商品，確認清單後就可以付款。',target:'next'};
-    if (state.stage === 'pay') return {intent,text:'請使用專用付款卡感應。看到「結帳完成」才表示這次模擬付款成功。',target:'scanner',tutorial:'pay'};
+    if (state.stage === 'pay') return state.paymentMethod?{intent,text:'請把專用展示付款卡靠近感應區。看到「交易完成」才表示模擬付款成功。',target:'scanner',tutorial:'pay'}:{intent,text:'請先選擇行動支付、信用卡或電子票證。這是展示，三種方式都用專用展示付款卡模擬感應。',target:'next'};
     if (state.stage === 'complete') return {intent,text:'這一筆已經完成模擬付款，不需要再感應。'};
-    return {intent,text:state.stage === 'scan' ? '核對清單後，點「確認並付款」。' : '核對清單後，點「確認並付款」。',target:'next'};
+    return {intent,text:state.stage === 'review' ? '請確認商品與金額，正確就點綠色的「是」。' : '商品都齊了，點黃色的「去結帳」，再確認商品與金額。',target:'next'};
   }
-  if (intent === 'next' && state.stage === 'scan' && state.cart.length) return {intent,text:'商品都齊了，就點「確認並付款」。',target:'next'};
+  if (intent === 'next' && state.stage === 'scan' && state.cart.length) return {intent,text:'商品都齊了，就點黃色的「去結帳」。',target:'next'};
   if (intent === 'next' || intent === 'scan') return {intent,text:stepMessage(state),target:state.stage === 'scan' || state.stage === 'pay' ? 'scanner' : 'next'};
   return {intent:'unknown',text:'我還不太明白。您可以問我「怎麼掃商品」、「總共多少錢」或「接下來怎麼做」，也可以點下面的協助按鈕。'};
 }
