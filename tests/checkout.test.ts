@@ -63,7 +63,7 @@ test('declining amount confirmation returns to scan without losing items',()=>{
  s=reduceCheckout(s,{type:'EVENT',event:event(1,'DE000001'),catalog:simulationCatalog});
  s=reduceCheckout(s,{type:'REVIEW'});assert.equal(s.stage,'review');
  s=reduceCheckout(s,{type:'BACK'});assert.equal(s.stage,'scan');assert.equal(count(s),1);
- assert.equal(answerHelp('pay',s,simulationCatalog,'').text.includes('去結帳'),true);
+ assert.equal(answerHelp('pay',s,simulationCatalog,'').text.includes('我要結帳'),true);
 });
 
 test('colloquial help chooses specific requests over generic help or checkout words',()=>{

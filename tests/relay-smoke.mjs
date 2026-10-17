@@ -38,7 +38,7 @@ try {
  await page.getByRole('checkbox').uncheck();await page.getByRole('button',{name:'連接感應裝置',exact:true}).click();
  await page.getByRole('dialog').waitFor({state:'hidden'});
  await packet('person_detected');
- await page.getByRole('heading',{name:'您好，歡迎光臨！'}).waitFor();
+ await page.locator('.welcome-speech').waitFor();
  await page.getByRole('button',{name:'點我開始結帳'}).click();
  await page.getByRole('button',{name:'不需要'}).click();
  await page.getByRole('heading',{name:'掃描商品'}).waitFor();
@@ -46,7 +46,7 @@ try {
  await packet('rfid_scanned','CAFE0002');await packet('rfid_scanned','CAFE0001');
  await page.locator('.item-count').filter({hasText:'3 件'}).waitFor();
  await page.reload({waitUntil:'networkidle'});await page.locator('.item-count').filter({hasText:'3 件'}).waitFor();
- await page.getByRole('button',{name:'去結帳',exact:true}).click();
+ await page.getByRole('button',{name:'我要結帳',exact:true}).click();
  await page.getByRole('button',{name:'是，金額正確'}).click();
  await page.getByRole('button',{name:'信用卡'}).click();
  await packet('rfid_scanned','CAFE0001');await page.getByText('這是商品卡。請使用專用展示付款卡感應。',{exact:true}).waitFor();

@@ -23,7 +23,7 @@ try{
   await page.getByRole('button',{name:'感應牧場鮮乳'}).click();
   await page.getByRole('button',{name:'關閉測試面板'}).click();
   await page.getByLabel('商品感應示範').waitFor({state:'hidden'});
-  await page.getByRole('button',{name:'去結帳'}).click();
+  await page.getByRole('button',{name:'我要結帳'}).click();
   await page.getByRole('button',{name:'是，金額正確'}).click();
   await page.getByRole('button',{name:'信用卡'}).click();
   await page.clock.runFor(16000);

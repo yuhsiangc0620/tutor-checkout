@@ -29,7 +29,7 @@ try {
   assert.equal(await page.locator('.setup-modal input[type=password]').count(),0);
   await page.getByRole('checkbox').uncheck();
   await page.getByRole('button',{name:'連接感應裝置',exact:true}).click();
-  await page.getByRole('heading',{name:'點我開始結帳'}).waitFor();
+  await page.getByRole('button',{name:'點我開始結帳'}).waitFor();
   await page.getByText('實體感測模式 · 裝置已連線').waitFor();
   await page.getByRole('button',{name:'點我開始結帳'}).click();
   await page.getByRole('button',{name:'不需要'}).click();

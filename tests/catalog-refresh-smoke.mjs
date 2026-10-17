@@ -26,10 +26,10 @@ try {
   await page.getByRole('checkbox').uncheck();
   await page.getByRole('button',{name:'連接感應裝置'}).click();
   await page.getByRole('dialog',{name:'準備開始體驗'}).waitFor({state:'hidden'});
-  await page.getByRole('heading',{name:'點我開始結帳'}).waitFor();
+  await page.getByRole('button',{name:'點我開始結帳'}).waitFor();
 
   events.push({cursor:1,type:'person_detected',receivedAt:Date.now()});
-  await page.getByRole('heading',{name:'您好，歡迎光臨！'}).waitFor();
+  await page.locator('.welcome-speech').waitFor();
   await page.getByRole('button',{name:'點我開始結帳'}).click();
   await page.getByRole('button',{name:'不需要'}).click();
   await page.getByRole('heading',{name:'掃描商品'}).waitFor();

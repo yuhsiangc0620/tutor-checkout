@@ -24,13 +24,13 @@ export function findIntent(text: string): Intent {
 }
 export function stepMessage(state: Checkout): string {
   return ({
-    idle:'您好！我是您的結帳小幫手小智。請點螢幕中間開始結帳。',
+    idle:'請點螢幕中間開始結帳。',
     welcome:'您好！我是您的結帳小幫手小智，今天讓我陪您一起結帳吧！請點一下螢幕中間開始喔！',
-    'tutorial-choice':'請問您需不需要先看一遍完整教學？點「需要」可以看示範，點「不需要」就直接開始結帳。',
-    scan:'太好了！我們直接開始結帳吧！請確認商品都有感應到喔。把商品卡靠近感應區，看到商品出現後再移開。如果有問題，可以問我。',
-    review:'請確認螢幕上的商品和總金額對不對。如果正確，請點綠色的「是」。',
-    pay:state.paymentMethod?'請把專用展示付款卡靠近感應區，稍等一下，不要太快移開。':'您今天想用什麼方式付款呢？請點選畫面上的選項。',
-    complete:'太棒了！結帳已經成功完成囉！這是模擬付款，沒有實際扣款。',
+    'tutorial-choice':'請問您需不需要先看一遍完整的教學影片呢？點左邊可以看影片，點右邊可以直接開始結帳喔！',
+    scan:'太好了！我們直接開始結帳吧！請確認購買的商品都有感應到喔！請把商品卡靠近感應區，聽到嗶一聲就可以了。如果有發生什麼問題，可以問我喔。',
+    review:'請您確認螢幕上的商品和總金額對不對喔！如果數量金額都正確，請點綠色的「是」。',
+    pay:state.paymentMethod?'感應中，請把卡片靠緊感應區，稍微等一下下，不要拿開喔！':'您今天想用什麼方式付錢呢？請點選畫面上的選項喔！',
+    complete:'太棒了！結帳已經成功完成囉！',
   })[state.stage];
 }
 export function answerHelp(intent: Intent, state: Checkout, catalog: Catalog, previous: string): Help {
@@ -42,9 +42,9 @@ export function answerHelp(intent: Intent, state: Checkout, catalog: Catalog, pr
     if (!state.cart.length) return {intent,text:'請先點開始結帳並加入商品，確認清單後就可以付款。',target:'next'};
     if (state.stage === 'pay') return state.paymentMethod?{intent,text:'請把專用展示付款卡靠近感應區。看到「交易完成」才表示模擬付款成功。',target:'scanner',tutorial:'pay'}:{intent,text:'請先選擇行動支付、信用卡或電子票證。這是展示，三種方式都用專用展示付款卡模擬感應。',target:'next'};
     if (state.stage === 'complete') return {intent,text:'這一筆已經完成模擬付款，不需要再感應。'};
-    return {intent,text:state.stage === 'review' ? '請確認商品與金額，正確就點綠色的「是」。' : '商品都齊了，點黃色的「去結帳」，再確認商品與金額。',target:'next'};
+    return {intent,text:state.stage === 'review' ? '請確認商品與金額，正確就點綠色的「是」。' : '商品都齊了，點綠色的「我要結帳」，再確認商品與金額。',target:'next'};
   }
-  if (intent === 'next' && state.stage === 'scan' && state.cart.length) return {intent,text:'商品都齊了，就點黃色的「去結帳」。',target:'next'};
+  if (intent === 'next' && state.stage === 'scan' && state.cart.length) return {intent,text:'商品都齊了，就點綠色的「我要結帳」。',target:'next'};
   if (intent === 'next' || intent === 'scan') return {intent,text:stepMessage(state),target:state.stage === 'scan' || state.stage === 'pay' ? 'scanner' : 'next'};
   return {intent:'unknown',text:'我還不太明白。您可以問我「怎麼掃商品」、「總共多少錢」或「接下來怎麼做」，也可以點下面的協助按鈕。'};
 }

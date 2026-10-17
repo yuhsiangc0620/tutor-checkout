@@ -1,4 +1,3 @@
-import { useId } from 'react';
 import type { Product } from '@/lib/domain';
 export function ProductArt({kind,className=''}:{kind:Product['art'];className?:string}) {
   return <svg viewBox="0 0 160 160" className={`product-art ${className}`} aria-hidden="true">
@@ -7,14 +6,5 @@ export function ProductArt({kind,className=''}:{kind:Product['art'];className?:s
   </svg>;
 }
 export function Mascot({mood='idle'}:{mood?:string}) {
-  const gradientId = useId();
-  return <div className={`mascot mascot-${mood}`}><svg viewBox="0 0 240 220" role="img" aria-label="結帳小幫手">
-    <defs><linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stopColor="#ccecff"/><stop offset="48%" stopColor="#e0e7fb"/><stop offset="100%" stopColor="#f9d9e8"/>
-    </linearGradient></defs>
-    <g className="mascot-body">
-      <ellipse cx="120" cy="112" rx="83" ry="70" fill={`url(#${gradientId})`}/>
-      <g className="mascot-eyes" fill="#39465b"><ellipse cx="99" cy="112" rx="4.5" ry="7"/><ellipse cx="141" cy="112" rx="4.5" ry="7"/></g>
-    </g>
-  </svg></div>;
+  return <div className={`mascot mascot-${mood}`} role="img" aria-label="結帳小幫手小智"/>;
 }

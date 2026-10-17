@@ -21,23 +21,29 @@ async function fits(label){
 
 try{
   await page.goto('http://localhost:3000',{waitUntil:'networkidle'});
-  await page.getByRole('heading',{name:'點我開始結帳'}).waitFor();
+  await page.getByRole('button',{name:'點我開始結帳'}).waitFor();
+  await page.setViewportSize({width:1612,height:906});
+  const capsule=await page.locator('.start-capsule').boundingBox();
+  assert.ok(capsule&&Math.abs(capsule.x-161)<3&&Math.abs(capsule.width-1290)<3,'opening capsule matches the reference layout');
+  assert.equal(await page.locator('.scripted-kiosk').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(0, 81, 88)');
+  await page.screenshot({path:'test-results/flow-reference-idle.png'});
+  await page.setViewportSize({width:1024,height:768});
   await fits('idle');
   await page.screenshot({path:'test-results/flow-idle.png'});
   await page.getByRole('button',{name:'點我開始結帳'}).click();
   await page.getByRole('checkbox').uncheck();
   await page.getByRole('button',{name:'先使用模擬展示'}).click();
   await panel();await page.getByRole('button',{name:'有人靠近'}).click();await page.getByRole('button',{name:'關閉測試面板'}).click();
-  await page.getByRole('heading',{name:'您好，歡迎光臨！'}).waitFor();
+  await page.locator('.welcome-speech').waitFor();
   await page.getByRole('button',{name:'點我開始結帳'}).click();
-  await page.getByRole('heading',{name:'請問您需不需要完整的教學動畫？'}).waitFor();
+  await page.locator('.tutorial-speech').waitFor();
   await fits('tutorial choice');await page.screenshot({path:'test-results/flow-tutorial-choice.png'});
   await page.getByRole('button',{name:'需要',exact:true}).click();
   await page.getByRole('button',{name:'下一步'}).click();
   await page.getByRole('button',{name:'下一步'}).click();
   await page.getByRole('button',{name:'開始結帳'}).click();
   await page.getByRole('heading',{name:'掃描商品'}).waitFor();
-  assert.equal(await page.getByRole('button',{name:'去結帳'}).isEnabled(),false);
+  assert.equal(await page.getByRole('button',{name:'我要結帳'}).isEnabled(),false);
   await panel();
   for(const name of ['感應牧場鮮乳','感應青森蘋果','感應原味吐司'])await page.getByRole('button',{name}).click();
   await page.getByRole('button',{name:'關閉測試面板'}).click();
@@ -49,11 +55,11 @@ try{
   await page.setViewportSize({width:1024,height:768});
   await page.reload({waitUntil:'networkidle'});
   assert.equal(await page.locator('.cart-row').count(),3);
-  await page.getByRole('button',{name:'去結帳'}).click();
+  await page.getByRole('button',{name:'我要結帳'}).click();
   await page.getByRole('heading',{name:'商品與金額是否正確？'}).waitFor();
   await page.getByRole('button',{name:'否，返回檢查'}).click();
   assert.equal(await page.locator('.cart-row').count(),3);
-  await page.getByRole('button',{name:'去結帳'}).click();
+  await page.getByRole('button',{name:'我要結帳'}).click();
   await page.getByRole('button',{name:'是，金額正確'}).click();
   await page.getByRole('heading',{name:'選擇付款方式'}).waitFor();
   await fits('payment choice');await page.screenshot({path:'test-results/flow-payment-choice.png'});
@@ -70,7 +76,7 @@ try{
   assert.match(await page.locator('.print-receipt').innerText(),/自助結帳展示明細/);
   await page.emulateMedia({media:'screen'});
   await page.getByRole('button',{name:'結束交易'}).click();
-  await page.getByRole('heading',{name:'點我開始結帳'}).waitFor();
+  await page.getByRole('button',{name:'點我開始結帳'}).waitFor();
   assert.deepEqual(failures,[]);
   console.log('PASS: PIR welcome, tutorial, scan, amount correction, payment choice, card guards, completion and tablet sizes.');
 }finally{await browser.close();}
