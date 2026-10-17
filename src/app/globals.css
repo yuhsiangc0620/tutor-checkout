@@ -19,6 +19,9 @@
 
 .welcome-content .lead{max-width:720px}
 
+.voice-history-card .settings-heading{gap:16px}.voice-history-card .settings-heading .button{font-size:16px;min-height:48px}.voice-history-list{margin-top:18px}.voice-history-item{border-top:1px solid var(--line);padding:18px 0}.voice-history-meta{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}.voice-history-meta span{padding:4px 9px;border:1px solid var(--pink-line);border-radius:999px;color:var(--ink)}.voice-history-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}.voice-history-pair>div{min-width:0;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fbfdff}.voice-history-pair>div:last-child{border-color:var(--pink-line);background:#fffcfe}.voice-history-pair span{font-size:13px;color:var(--muted)}.voice-history-card .voice-history-pair p{font-size:17px;line-height:1.7;color:var(--ink);overflow-wrap:anywhere;margin:7px 0 0}.voice-history-card .voice-history-empty{padding:24px 0;color:var(--muted)}
+@media(max-width:700px){.voice-history-card .settings-heading{align-items:flex-start}.voice-history-card .settings-heading .button{font-size:14px;padding:10px 12px}.voice-history-pair{grid-template-columns:1fr}}
+
 /* No brand bar: only checkout progress appears once a transaction begins. */
 .kiosk>.stepper{position:static;transform:none;left:auto;top:auto;min-height:64px;flex-shrink:0;justify-content:center;width:100%;border-bottom:1px solid var(--line)}
 .display-options{order:5;margin-left:0}.assistant-dock .display-options{color:#8797a9}.is-welcome .checkout-main{padding-top:40px}
