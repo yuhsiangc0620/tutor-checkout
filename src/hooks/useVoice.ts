@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MicVAD as MicVADType } from '@ricky0123/vad-web';
+import { voiceFile, voiceIdsForText } from '@/lib/voiceClips';
 export type VoiceStatus='off'|'loading'|'ready'|'listening'|'thinking'|'speaking'|'error';
 export function useVoice(onTranscript:(text:string)=>void,active:boolean) {
   const [status,setStatus]=useState<VoiceStatus>('off');
@@ -14,6 +15,7 @@ export function useVoice(onTranscript:(text:string)=>void,active:boolean) {
   const callback=useRef(onTranscript); callback.current=onTranscript;
   const flags=useRef({active,enabled:false,ready:false,busy:false,speaking:false,loading:false}); flags.current.active=active;
   const vad=useRef<MicVADType|null>(null), worker=useRef<Worker|null>(null), stream=useRef<MediaStream|null>(null);
+  const audio=useRef<HTMLAudioElement|null>(null),stopPart=useRef<(()=>void)|null>(null);
   const segmentTimer=useRef<ReturnType<typeof setTimeout>|null>(null), resultTimer=useRef<ReturnType<typeof setTimeout>|null>(null), speechTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const generation=useRef(0), requestId=useRef(0), speechId=useRef(0);
   const discardResult=useRef(false);
@@ -27,30 +29,36 @@ export function useVoice(onTranscript:(text:string)=>void,active:boolean) {
     else { vad.current?.setOptions({submitUserSpeechOnPause:false});void vad.current?.pause(); if(segmentTimer.current)clearTimeout(segmentTimer.current);if(!f.speaking&&!f.busy&&!f.loading)setStatus('off'); }
   },[]);
   const speak=useCallback((text:string,slower=false)=>{
-    if(typeof window==='undefined'||!('speechSynthesis' in window)){setSpeechAvailable(false);return;}
-    const synth=window.speechSynthesis;
-    const voices=synth.getVoices();
-    // Web Speech exposes no gender field; prefer named Chinese female voices.
-    const chinese=voices.filter(v=>/^zh/i.test(v.lang));
-    const female=(v:SpeechSynthesisVoice)=>/Mei[ -]?jia|美佳|Hsiao[ -]?(Chen|Yu)|曉臻|曉雨|Hanhan|Han[ -]Han|涵涵|Ting[ -]?ting|婷婷|Xiao(xiao|yi)|曉曉|晓晓|晓伊|Flo\b|Shelley\b|Sandy\b/i.test(v.name);
-    const taiwan=(v:SpeechSynthesisVoice)=>/^zh[-_]TW/i.test(v.lang);
-    const voice=chinese.find(v=>taiwan(v)&&/Mei[ -]?jia|美佳/i.test(v.name))
-      ??chinese.find(v=>taiwan(v)&&female(v))
-      ??chinese.find(female)
-      ??chinese.find(taiwan)
-      ??chinese[0];
-    if(!voice){setSpeechAvailable(false);return;}
-    setSpeechAvailable(true);
-    if(slower)slow.current=true;
+    if(typeof window==='undefined')return;
+    const ids=voiceIdsForText(text);
     const id=++speechId.current;
-    synth.cancel(); if(speechTimer.current)clearTimeout(speechTimer.current);
-    flags.current.speaking=true;
-    sync();setStatus('speaking');
-    const utterance=new SpeechSynthesisUtterance(text);utterance.voice=voice;utterance.lang=voice.lang;utterance.rate=slow.current?0.72:0.88;
-    const finish=()=>{if(id!==speechId.current||!mounted.current)return; if(speechTimer.current)clearTimeout(speechTimer.current);speechTimer.current=setTimeout(()=>{flags.current.speaking=false;sync();},450);};
-    utterance.onend=finish;utterance.onerror=finish;
-    synth.speak(utterance);
-    speechTimer.current=setTimeout(()=>{synth.cancel();finish();},45000);
+    stopPart.current?.();
+    if(speechTimer.current)clearTimeout(speechTimer.current);
+    if(!ids?.length){setSpeechAvailable(false);flags.current.speaking=false;sync();return;}
+    if(slower)slow.current=true;
+    flags.current.speaking=true;sync();setStatus('speaking');
+    void (async()=>{
+      let completed=true;
+      for(const part of ids){
+        if(id!==speechId.current||!mounted.current){completed=false;break;}
+        const clip=new Audio(voiceFile(part));
+        clip.playbackRate=slow.current?0.8:1;
+        audio.current=clip;
+        const played=await new Promise<boolean>(resolve=>{
+          let settled=false;
+          const done=(ok:boolean)=>{if(settled)return;settled=true;clip.onended=null;clip.onerror=null;if(audio.current===clip)audio.current=null;stopPart.current=null;resolve(ok);};
+          stopPart.current=()=>{clip.pause();done(false);};
+          clip.onended=()=>done(true);
+          clip.onerror=()=>done(false);
+          void clip.play().catch(()=>done(false));
+        });
+        if(!played){completed=false;break;}
+      }
+      if(id!==speechId.current||!mounted.current)return;
+      setSpeechAvailable(completed);
+      if(!completed)setError('配音檔尚未放入，或瀏覽器暫時無法播放。請閱讀畫面文字。');
+      speechTimer.current=setTimeout(()=>{flags.current.speaking=false;sync();},250);
+    })();
   },[sync]);
   const initialize=useCallback(async()=>{
     if(flags.current.loading)return;
@@ -62,7 +70,6 @@ export function useVoice(onTranscript:(text:string)=>void,active:boolean) {
       const media=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
       if(token!==generation.current||!mounted.current){media.getTracks().forEach(t=>t.stop());return;}
       stream.current=media;
-      if('speechSynthesis' in window)window.speechSynthesis.getVoices();
       const w=new Worker(new URL('../workers/whisper.worker.ts',import.meta.url));worker.current=w;
       const modelReady=new Promise<void>((resolve,reject)=>{
         const timer=setTimeout(()=>reject(new Error('模型載入逾時，請檢查網路後重試。')),180000);
@@ -123,8 +130,8 @@ export function useVoice(onTranscript:(text:string)=>void,active:boolean) {
     }
   },[sync]);
   const toggle=()=>{if(flags.current.enabled){flags.current.enabled=false;setEnabled(false);discardResult.current=true;sync();}else void initialize();};
-  const cancelSpeech=useCallback(()=>{speechId.current++;window.speechSynthesis?.cancel();if(speechTimer.current)clearTimeout(speechTimer.current);flags.current.speaking=false;sync();},[sync]);
+  const cancelSpeech=useCallback(()=>{speechId.current++;stopPart.current?.();if(speechTimer.current)clearTimeout(speechTimer.current);flags.current.speaking=false;sync();},[sync]);
   useEffect(()=>{if(!active)discardResult.current=true;sync();},[active,sync]);
-  useEffect(()=>{mounted.current=true;const visible=()=>{if(document.hidden){flags.current.enabled=false;setEnabled(false);discardResult.current=true;cancelSpeech();sync();}};document.addEventListener('visibilitychange',visible);return()=>{mounted.current=false;generation.current++;document.removeEventListener('visibilitychange',visible);worker.current?.terminate();void vad.current?.destroy();stream.current?.getTracks().forEach(t=>t.stop());window.speechSynthesis?.cancel();[segmentTimer,resultTimer,speechTimer].forEach(t=>{if(t.current)clearTimeout(t.current);});};},[sync,cancelSpeech]);
+  useEffect(()=>{mounted.current=true;const visible=()=>{if(document.hidden){flags.current.enabled=false;setEnabled(false);discardResult.current=true;cancelSpeech();sync();}};document.addEventListener('visibilitychange',visible);return()=>{mounted.current=false;generation.current++;document.removeEventListener('visibilitychange',visible);worker.current?.terminate();void vad.current?.destroy();stream.current?.getTracks().forEach(t=>t.stop());stopPart.current?.();[segmentTimer,resultTimer,speechTimer].forEach(t=>{if(t.current)clearTimeout(t.current);});};},[sync,cancelSpeech]);
   return {status,enabled,progress,error,initialize,toggle,speak,cancelSpeech,speechAvailable,lastTranscript,latency,backend};
 }

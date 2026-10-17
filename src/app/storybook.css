@@ -1,0 +1,185 @@
+/* Minimal customer-facing theme. Staff settings and checkout behavior are unchanged. */
+@media screen {
+  .scripted-kiosk {
+    --guide-ink: #16595a;
+    --guide-paper: #fff;
+    --guide-aqua: #f5faf9;
+    --guide-pink: #edf5f2;
+    --guide-green: #16595a;
+    --ink: #173c3d;
+    --muted: #617777;
+    --line: #d9e7e5;
+    --blue-line: #d9e7e5;
+    --pink-line: #cadfdb;
+    background: #fff;
+    color: #173c3d;
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  .scripted-kiosk:before { inset: 0; background: #fff; border-radius: 0; }
+  .scripted-kiosk:after { content: none; }
+  .scripted-kiosk .checkout-main, .scripted-kiosk .journey-progress { position: relative; z-index: 1; }
+  .scripted-intro .start-capsule {
+    top: 15%; height: 26%; background: #fff; color: #173c3d;
+    border: 3px solid #16595a; border-radius: 999px;
+    box-shadow: none; font-size: clamp(42px, 10vw, 156px);
+    letter-spacing: -.07em;
+  }
+  .scripted-intro .start-capsule:hover, .scripted-intro .start-capsule:focus-visible { background: #f5faf9; }
+  .scripted-intro > .mascot { mix-blend-mode: multiply; }
+  .scripted-intro .small-note { color: #617777; }
+  .script-speech, .scripted-kiosk .assistant-message {
+    background: #fff; border: 2px solid #16595a; border-radius: 18px;
+    box-shadow: none; color: #173c3d;
+  }
+  .script-speech:before { border-top-color: #16595a; }
+  .script-speech:after { border-top-color: #fff; }
+  .welcome-speech, .tutorial-speech { color: #173c3d; font-weight: 500; }
+  .tutorial-choice-actions .button {
+    border: 2px solid #16595a; border-radius: 18px;
+    box-shadow: none; text-shadow: none; color: #16595a;
+    background: #fff; font-weight: 700;
+  }
+  .tutorial-choice-actions .button:hover { background: #f5faf9; }
+  .tutorial-choice-actions .tutorial-no { border-color: #cadfdb; background: #f5faf9; color: #16595a; text-shadow: none; }
+  .scripted-kiosk .journey-progress li, .scripted-kiosk .journey-progress li.current { background: #16595a; box-shadow: none; outline: none; }
+  .scripted-kiosk .journey-progress li:not(:last-child):not(:first-child):before { background: #cadfdb; }
+  .scripted-shopping .cart-list, .scripted-shopping .cart-bottom, .scripted-kiosk .scripted-complete .receipt {
+    background: #f5faf9; border: 1px solid #d9e7e5; box-shadow: none;
+    border-radius: 18px;
+  }
+  .scripted-shopping .cart-list { padding: 8px 22px; }
+  .scripted-shopping .cart-columns { background: #f5faf9; color: #173c3d; border-bottom: 1px solid #cadfdb; }
+  .scripted-shopping .cart-row { border-bottom: 1px solid #d9e7e5; }
+  .scripted-shopping .cart-row:last-child { border-bottom: 0; }
+  .scripted-shopping .product-info h2, .scripted-shopping .unit-price, .scripted-shopping .line-price { color: #173c3d; }
+  .scripted-shopping .quantity button { background: #fff; border: 1px solid #cadfdb; color: #16595a; }
+  .scripted-shopping .scan-guidance { color: #16595a; }
+  .scripted-shopping .amount-breakdown em { color: #16595a; }
+  .scripted-shopping .cancel-cta, .scripted-shopping .checkout-cta {
+    border: 1px solid #16595a; border-radius: 12px; box-shadow: none;
+    min-height: 58px; font-size: 20px; text-shadow: none;
+  }
+  .scripted-shopping .cancel-cta { background: #fff; color: #16595a; }
+  .scripted-shopping .checkout-cta { background: #16595a; color: #fff; }
+  .scripted-shopping .checkout-cta:hover:not(:disabled) { background: #104b4c; }
+  .scripted-shopping .cancel-cta:hover:not(:disabled) { background: #f5faf9; }
+  .scripted-kiosk .payment-header h1, .scripted-kiosk .scripted-complete h1 { color: #173c3d; }
+  .scripted-kiosk .payment-method {
+    background: #fff; border: 2px solid #cadfdb; border-radius: 18px;
+    box-shadow: none; color: #16595a; font-weight: 600;
+  }
+  .scripted-kiosk .payment-method:hover { background: #f5faf9; border-color: #16595a; }
+  .scripted-kiosk .payment-sensing .sensing-icon { background: #f5faf9; border-color: #cadfdb; color: #16595a; box-shadow: none; }
+  .scripted-kiosk .scripted-complete .success-mark { background: #f5faf9; color: #16595a; border: 2px solid #cadfdb; }
+  .scripted-kiosk .modal { background: #fff; border: 2px solid #16595a; border-radius: 22px; box-shadow: 0 18px 60px #173c3d1c; }
+  .scripted-kiosk .modal h2 { color: #173c3d; }
+  .scripted-kiosk .button.primary, .scripted-kiosk .amount-confirm .button.primary { background: #16595a; border-color: #16595a; color: #fff; }
+  .scripted-kiosk .button.secondary { background: #fff; border-color: #cadfdb; color: #16595a; }
+  .scripted-kiosk .assistant-message:after { background: #fff; border-color: #16595a; }
+  .scripted-kiosk .mic-button, .scripted-kiosk .help-trigger, .scripted-kiosk .display-options {
+    background: #fff; border: 1px solid #cadfdb; box-shadow: none; color: #16595a;
+  }
+  .scripted-kiosk .rescue-question, .scripted-kiosk .rescue-demo { background: #f5faf9; border-color: #cadfdb; }
+  .scripted-kiosk .tutorial .teaching-card { background: #fff; border-color: #16595a; color: #16595a; }
+  .scripted-kiosk .tutorial .teaching-reader { background: #f5faf9; border-color: #cadfdb; color: #16595a; }
+  .scripted-kiosk .setup-modal .button.secondary, .scripted-kiosk .tools-modal .button.secondary, .scripted-kiosk .help-modal .button.secondary { background: #fff; border-color: #cadfdb; }
+  .scripted-kiosk .mascot { animation: none; }
+  .scripted-kiosk button:focus-visible { outline: 3px solid #16595a; outline-offset: 3px; }
+}
+@media screen and (max-width: 700px) {
+  .scripted-intro .start-capsule { left: 5%; width: 90%; height: 22%; font-size: clamp(34px, 8vw, 62px); }
+  .scripted-shopping .cart-list { padding: 7px 12px; }
+  .scripted-shopping .cart-bottom { padding-bottom: 60px; }
+}
+
+/* Landscape tablet layout: a work area and a dedicated assistant column. */
+@media screen and (min-width: 701px) {
+  .scripted-kiosk {
+    display: grid; grid-template-columns: minmax(0, 1fr) 260px;
+    grid-template-rows: 88px minmax(0, 1fr); gap: 0 28px;
+    padding: 0 32px 24px; min-height: 600px;
+  }
+  .scripted-kiosk .journey-progress { grid-column: 1 / -1; grid-row: 1; height: auto; padding: 18px 185px 18px 0; border-bottom: 1px solid #d9e7e5; margin-bottom: 16px; }
+  .scripted-kiosk .journey-progress ol { height: 36px; justify-content: flex-start; gap: 36px; }
+  .scripted-kiosk .journey-progress li { width: auto; height: 36px; border-radius: 0; background: transparent; color: #78908d; font-size: 16px; white-space: nowrap; display: flex; gap: 10px; font-weight: 500; }
+  .scripted-kiosk .journey-progress li.current { background: transparent; color: #16595a; font-weight: 700; }
+  .scripted-kiosk .journey-progress li:before { display: none; }
+  .scripted-kiosk .journey-progress li:not(.current):after { display: none; }
+  .scripted-kiosk .journey-progress li.current:after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #16595a; }
+  .scripted-kiosk .checkout-main { grid-column: 1; grid-row: 2; min-width: 0; padding: 0; }
+  .scripted-kiosk .assistant-dock { grid-column: 2; grid-row: 2; position: relative; inset: auto; width: auto; height: auto; min-height: 0; padding: 24px 0 0 22px; border: 0; border-left: 1px solid #e5eeec; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .scripted-kiosk .assistant-message { position: relative; inset: auto; width: 100%; min-width: 0; min-height: 0; padding: 20px; order: 1; border: 0; background: #f5faf9; border-radius: 18px; }
+  .scripted-kiosk .assistant-message:after { width: 18px; height: 18px; right: 40px; bottom: -9px; border: 0; background: #f5faf9; transform: rotate(45deg); }
+  .scripted-kiosk .assistant-bubble { max-height: 260px; }
+  .scripted-kiosk .assistant-bubble p { font-size: 20px; line-height: 1.65; color: #173c3d; }
+  .scripted-kiosk .voice-state { margin-top: 14px; font-size: 12px; line-height: 1.5; }
+  .scripted-kiosk .assistant-dock > .mascot { position: relative; inset: auto; order: 2; width: min(100%, 235px); margin-top: auto; flex-shrink: 0; }
+  .scripted-kiosk .mic-button, .scripted-kiosk .help-trigger, .scripted-kiosk .display-options { top: 15px; height: 48px; width: 48px; min-width: 48px; border-radius: 12px; }
+  .scripted-kiosk .display-options { right: 32px; }
+  .scripted-kiosk .help-trigger { right: 88px; }
+  .scripted-kiosk .mic-button { right: 144px; }
+  .scripted-shopping, .scripted-kiosk .payment-flow { width: 100%; margin: 0; padding: 12px 0 0; min-height: 0; }
+  .scripted-shopping .section-heading { height: auto; min-height: 48px; overflow: visible; margin-bottom: 16px; justify-content: space-between; align-items: center; }
+  .scripted-shopping .section-heading h1 { font-size: 28px; color: #173c3d; }
+  .scripted-shopping .section-heading p { display: none; }
+  .scripted-shopping .item-count { font-size: 18px; color: #617777; }
+  .scripted-shopping .shopping-workspace { display: flex; flex-direction: column; gap: 12px; }
+  .scripted-shopping .cart-list { flex: 1; min-height: 0; background: #fff; padding: 0 16px; }
+  .scripted-shopping .cart-columns { background: #fff; padding-top: 15px; padding-bottom: 15px; font-size: 14px; color: #617777; }
+  .scripted-shopping .cart-row { min-height: 88px; }
+  .scripted-shopping .cart-columns { grid-template-columns: 28px minmax(0,1fr) 70px 116px 86px; padding-right: 46px; gap: 8px; }
+  .scripted-shopping .cart-row { grid-template-columns: 28px minmax(0,1fr) 70px 116px 86px 38px; gap: 8px; }
+  .scripted-shopping .product-info h2 { font-size: 20px; }
+  .scripted-shopping .quantity button { width: 40px; height: 44px; min-height: 44px; border-radius: 8px; }
+  .scripted-shopping .quantity span { width: 28px; font-size: 18px; }
+  .scripted-shopping .empty-cart { height: calc(100% - 54px); min-height: 100px; gap: 20px; }
+  .scripted-shopping .scan-guidance { font-size: 18px; font-weight: 500; padding: 14px 0; margin: 0; }
+  .scripted-shopping .cart-bottom { padding: 18px 0 0; background: #fff; border: 0; border-top: 1px solid #d9e7e5; border-radius: 0; min-height: 100px; gap: 16px; }
+  .scripted-shopping .amount-breakdown { font-size: 13px; gap: 4px; }
+  .scripted-shopping .amount-breakdown strong { font-size: 17px; }
+  .scripted-shopping .amount-breakdown em { font-size: 30px; }
+  .scripted-shopping .cancel-cta { min-width: 0; padding: 12px 16px; font-size: 17px; border-color: #d9e7e5; }
+  .scripted-shopping .checkout-cta { min-width: 160px; padding: 12px 20px; font-size: 21px; }
+  .scripted-kiosk .rescue-demo { max-height: 165px; padding: 10px 14px; }
+  .scripted-kiosk .rescue-demo-art { min-height: 70px; }
+  .scripted-kiosk .payment-header { text-align: left; padding: 18px 0; }
+  .scripted-kiosk .payment-header h1 { font-size: 34px; }
+  .scripted-kiosk .payment-header .lead { font-size: 20px; margin-top: 12px; }
+  .scripted-kiosk .payment-methods { gap: 14px; }
+  .scripted-kiosk .payment-method { min-height: 210px; font-size: 22px; padding: 18px; text-align: center; }
+  .scripted-kiosk .payment-bottom { padding: 20px 0 0; border-color: #d9e7e5; }
+  .scripted-kiosk .scripted-complete { max-width: 100%; margin: auto; padding: 24px; }
+  .scripted-kiosk .scripted-complete h1 { font-size: 48px; }
+  .scripted-kiosk .scripted-complete .receipt { margin: 24px 0; padding: 22px; }
+  .scripted-kiosk.is-welcome { grid-template-columns: 1fr; grid-template-rows: 1fr; padding: 32px; }
+  .scripted-kiosk.is-welcome .checkout-main { grid-column: 1; grid-row: 1; }
+  .scripted-kiosk.is-welcome .assistant-dock { position: absolute; right: 26px; bottom: 20px; left: auto; top: auto; border: 0; padding: 0; gap: 8px; display: flex; flex-direction: row; }
+  .scripted-kiosk.is-welcome .assistant-dock .icon-button { width: 48px; height: 48px; background: #fff; }
+  .scripted-intro { display: grid; grid-template-columns: 42% 58%; grid-template-rows: 1fr auto 1fr; align-items: center; gap: 0; }
+  .scripted-intro > .mascot { position: relative; left: auto; bottom: auto; transform: none; grid-column: 1; grid-row: 1 / 4; justify-self: center; width: min(100%, 390px); background-image: url('/assistant-poses.png'); background-size: 400% 100%; background-position: 0 0; aspect-ratio: 543 / 724; }
+  .scripted-intro .start-capsule { position: relative; inset: auto; grid-column: 2; grid-row: 2; width: 90%; height: auto; min-height: 120px; padding: 28px 20px; border: 0; border-radius: 20px; background: #16595a; color: white; font-size: clamp(32px,4vw,58px); letter-spacing: -.03em; }
+  .scripted-intro .start-capsule:hover { background: #104b4c; }
+  .scripted-intro .welcome-speech { position: relative; inset: auto; grid-column: 2; grid-row: 1; align-self: end; width: 90%; margin-bottom: 28px; padding: 0; border: 0; font-size: 24px; text-align: left; line-height: 1.7; }
+  .scripted-intro .welcome-speech:before, .scripted-intro .welcome-speech:after { display: none; }
+  .scripted-intro .small-note { position: absolute; bottom: 0; left: 0; font-size: 13px; }
+  .tutorial-choice { display: grid; grid-template-columns: 42% 58%; grid-template-rows: 1fr 1fr; align-items: center; }
+  .tutorial-choice > .mascot { position: relative; inset: auto; transform: none; grid-column: 1; grid-row: 1 / 3; width: min(100%, 350px); justify-self: center; }
+  .tutorial-choice .tutorial-speech { position: relative; inset: auto; width: 90%; grid-column: 2; grid-row: 1; align-self: end; margin-bottom: 28px; padding: 0; border: 0; font-size: 25px; line-height: 1.7; text-align: left; }
+  .tutorial-choice .tutorial-speech:before, .tutorial-choice .tutorial-speech:after { display: none; }
+  .tutorial-choice-actions { position: relative; inset: auto; width: 90%; grid-column: 2; grid-row: 2; align-self: start; gap: 16px; }
+  .tutorial-choice-actions .button { width: 50%; height: 88px; min-height: 88px; font-size: 30px; }
+  .scripted-kiosk .connection-alert { position: absolute; top: 72px; left: 32px; right: 32px; z-index: 8; }
+}
+@media screen and (min-width: 701px) and (max-width: 1100px) {
+  .scripted-kiosk { grid-template-columns: minmax(0,1fr) 220px; gap: 0 20px; padding-left: 24px; padding-right: 24px; }
+  .scripted-kiosk .assistant-dock { padding-left: 16px; }
+  .scripted-kiosk .assistant-message { padding: 16px; }
+  .scripted-kiosk .assistant-bubble p { font-size: 18px; }
+  .scripted-shopping .cart-row { grid-template-columns: 22px minmax(0,1fr) 58px 100px 74px 32px; gap: 4px; }
+  .scripted-shopping .cart-columns { grid-template-columns: 22px minmax(0,1fr) 58px 100px 74px; gap: 4px; padding-right: 38px; }
+  .scripted-shopping .quantity button { width: 34px; }
+  .scripted-shopping .product-info h2 { font-size: 18px; }
+  .scripted-shopping .cancel-cta { padding: 10px; font-size: 15px; }
+  .scripted-shopping .checkout-cta { min-width: 130px; padding: 10px; font-size: 19px; }
+  .scripted-kiosk.is-welcome { grid-template-columns: 1fr; }
+}

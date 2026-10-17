@@ -102,10 +102,12 @@ vercel deploy --target=preview -y
 - VAD 使用 Silero v5；停頓門檻 1.2 秒，最短 350 ms、最長一段 15 秒。一次僅辨識一段。朗讀前暫停 VAD、播完再恢復，並開啟回音消除。
 - 語音不會直接刪商品、進入付款或付款；只解說、標示按鈕、播放教學。
 - OpenCC 統一繁簡中文，移除標點，依 `src/lib/help.ts` 的詞句規則回覆。
-- 朗讀優先台灣中文女聲，其次其他中文女聲與可用中文聲音。沒有中文聲音、麥克風遭拒、模型載入失敗或辨識不清時仍可使用文字與大型協助按鈕。
+- 朗讀改用 `public/voice-lines/` 的預錄 MP3。完整台詞、檔名及 VoAI 匯出步驟見 [配音台詞表](voice/配音台詞.md)；件數與金額由數字短音檔組合。音檔尚未放入時保留文字說明，不播放電腦合成語音。
 - 語音樣本在記憶體處理後釋放，不送伺服器、不儲存原始錄音。切到背景會關閉自動聆聽；回來後點麥克風重新啟用。
 - 工作人員設定頁會顯示同一分頁最近 20 次「語音轉錄／測試輸入 → 助理回應」及時間，並可清除。這些文字只暫存在該分頁的 `sessionStorage`，不送到 Redis；換裝置或另開分頁看不到紀錄。
 - 重新整理會保留本分頁的交易與游標；麥克風需再次點選開啟，瀏覽器仍可能要求使用者手勢才能朗讀。
+
+配音台詞的程式資料來源是 `voice/lines.json`；修改後執行 `node scripts/generate-voice-script.mjs` 更新可複製的台詞表，並重新匯出同名 MP3。語音辨識仍由瀏覽器內 Whisper 處理；VoAI 只用來製作預錄回覆音檔，網頁不會把使用者說話的錄音傳給 VoAI。
 
 可測句型：「怎麼掃商品」「接下來怎麼做」「取消上一件」「總共多少錢」「我要付款」「再說一次」「說慢一點」。英文或其他非預設問題會顯示可用協助項目。
 
@@ -132,6 +134,7 @@ vercel deploy --target=preview -y
 | 深綠外框、米白圓角、卡片教學動畫與平板橫向版面 | `src/app/flow.css` |
 | 三段操作教學 | `src/components/Tutorial.tsx` |
 | VAD／麥克風／朗讀 | `src/hooks/useVoice.ts` |
+| 預錄配音台詞與音檔 | `voice/配音台詞.md`、`public/voice-lines/` |
 | Whisper 模型與推論 | `src/workers/whisper.worker.ts` |
 | 卡片登記與連線紀錄 | `src/app/settings/page.tsx` |
 
@@ -150,4 +153,4 @@ node tests/relay-smoke.mjs
 
 交給別人重新部署的步驟見 [HANDOFF.md](HANDOFF.md)。已完成與待驗收項目見 `VALIDATION.md`。請務必用實體卡測連刷、持續貼卡、移開再刷、斷網與 ESP32 重啟；用真人中文測七類協助、背景聲與喇叭回音。iPad 尺寸檢查僅驗證排版，真正 iPad 的麥克風、中文聲音與辨識速度仍需實機。
 
-參考：原研究 PDF、[Whisper 模型](https://huggingface.co/onnx-community/whisper-base)、[Transformers.js 精度設定](https://huggingface.co/docs/transformers.js/en/guides/dtypes)、[瀏覽器語音清單](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/getVoices)。
+參考：原研究 PDF、[Whisper 模型](https://huggingface.co/onnx-community/whisper-base)、[Transformers.js 精度設定](https://huggingface.co/docs/transformers.js/en/guides/dtypes)。
